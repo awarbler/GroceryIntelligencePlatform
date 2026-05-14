@@ -1,0 +1,20 @@
+# =============================================================================
+# File: docker-compose.yml 
+# Project: Grocery Intelligence Platform 
+# Purpose: Defines local development containers for the backend project.
+# Description: This Compose file starts a local MongoDB container for development.
+# Security Note: This local MongoDB setup does not use production credentials.
+# =============================================================================
+
+services: # Defines the containers managed by Docker Compose.
+  mongodb: # Defines the MongoDB service name.
+    image: mongo:7.0 # Uses the official MongoDB Docker image.
+    container_name: grocery_intelligence_mongodb # Gives the MongoDB container a readable name.
+    restart: unless-stopped # Restarts the container unless you manually stop it.
+    ports: # Maps container ports to your Mac.
+      - "27017:27017" # Exposes MongoDB on localhost port 27017.
+    volumes: # Defines persistent storage for MongoDB data.
+      - mongodb_data:/data/db # Stores MongoDB data in a named Docker volume.
+
+volumes: # Defines named Docker volumes.
+  mongodb_data: # Creates a persistent volume for MongoDB data.
