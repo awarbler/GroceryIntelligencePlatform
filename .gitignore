@@ -14,7 +14,6 @@ __pycache__/
 *.pyd
 .ruff_cache/
 
-
 # Uploaded or generated session files
 sessions/
 uploads/
@@ -27,24 +26,15 @@ review_queue/
 generated_receipts/
 generated_reports/
 
-
-# Frontend build output
-dist/
-build/
-
 # Vite environment files
 frontend/.env
 frontend/.env.*
 !frontend/.env.example
 
-# VS Code local settings
-.vscode/settings.json
-.vscode/launch.json
 
 # Coverage and test reports
 coverage/
 htmlcov/
-.coverage
 coverage.xml
 
 # Docker local override files
@@ -58,21 +48,23 @@ backups/
 
 .DS_Store
 Thumbs.db
+.vscode/
 .vscode/*
 !.vscode/extensions.json
 !.vscode/settings.json
-.idea/
+# VS Code local settings
+.vscode/settings.json
+.vscode/launch.json
 
 .python-version
 *.py[cod]
 .venv/
 venv/
-*.egg-info/
-dist/
 
 # Node / frontend dependencies
 node_modules/
 **/node_modules/
+dist/
 **/dist/
 **/dist-ssr/
 **/*.local
@@ -106,8 +98,58 @@ gen/hardware/v1/hardware_pb2.pyi
 gen/hardware/v1/hardware_pb2_grpc.py
 
 # IDE
-.vscode/
 .idea/
+
+#file 
+FILE_STRUCTURE_TODO.md
+BACKEND_SETUP.md
+TERMINAL_REFERENCES_P1-03.md
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # nginx logs (generated at runtime)
 nginx/logs/
