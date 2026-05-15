@@ -13,11 +13,15 @@ from decimal import Decimal  # Imports Decimal so money values are tested accura
 
 import pytest  # Imports pytest so reusable fixtures can be declared.
 
-from backend.models.rebate import RebateStatus  # Imports the approved rebate status enum.
+from backend.models.rebate import (
+    RebateStatus,
+)  # Imports the approved rebate status enum.
 
 
 @pytest.fixture  # Registers this function as a reusable pytest fixture.
-def valid_ibotta_rebate_data() -> dict:  # Defines reusable valid Ibotta rebate input data.
+def valid_ibotta_rebate_data() -> (
+    dict
+):  # Defines reusable valid Ibotta rebate input data.
     return {  # Returns a dictionary that can be unpacked into RebateModel.
         "company": "Ibotta",  # Sets the rebate company name.
         "item_name": "Children's Claritin liquid",  # Sets the rebate item name.
@@ -32,11 +36,15 @@ def valid_ibotta_rebate_data() -> dict:  # Defines reusable valid Ibotta rebate 
 
 
 @pytest.fixture  # Registers this function as a reusable pytest fixture.
-def valid_fetch_rebate_data() -> dict:  # Defines reusable valid Fetch rebate input data.
+def valid_fetch_rebate_data() -> (
+    dict
+):  # Defines reusable valid Fetch rebate input data.
     return {  # Returns a dictionary that can be unpacked into RebateModel.
         "company": "Fetch",  # Sets the rebate company name.
         "item_name": "Dove body wash",  # Sets the rebate item name.
         "points_amount": 4000,  # Sets the Fetch points amount.
-        "dollar_equivalent": Decimal("4.00"),  # Sets the expected dollar equivalent for 4000 points.
+        "dollar_equivalent": Decimal(
+            "4.00"
+        ),  # Sets the expected dollar equivalent for 4000 points.
         "expiration_date": date(2026, 12, 31),  # Sets the rebate expiration date.
     }  # Ends the valid Fetch rebate dictionary.
