@@ -10,19 +10,13 @@
 
 from __future__ import annotations  # Enables forward-compatible type annotations.
 
-from decimal import (
-    Decimal,
-)  # Imports Decimal for exact money and point conversion values.
+from decimal import (Decimal,)  # Imports Decimal for exact money and point conversion values.
 
 from enum import StrEnum  # Imports StrEnum so enum values behave like strings.
 
-from pydantic import (
-    Field,
-)  # Imports Field for validation constraints and default values.
+from pydantic import (Field,)  # Imports Field for validation constraints and default values.
 
-from backend.models.base import (
-    BaseDocument,
-)  # Imports the shared MongoDB document base model.
+from backend.models.base import (BaseDocument,)  # Imports the shared MongoDB document base model.
 
 
 class ReportFormat(StrEnum):  # Defines supported report output formats.

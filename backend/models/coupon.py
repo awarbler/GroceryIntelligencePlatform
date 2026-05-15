@@ -8,32 +8,13 @@
 # SDD Traceability: Supports SDD v5.0 backend model validation and coupon data modeling for the Grocery Intelligence Platform.
 # =============================================================================
 
-from __future__ import (
-    annotations,
-)  # Enables modern Python type-hint behavior and forward references.
-
-from datetime import (
-    date,
-)  # Imports the date type for coupon availability and expiration dates.
-from decimal import (
-    Decimal,
-)  # Imports Decimal for money and percent fields to avoid floating-point rounding errors.
-from enum import (
-    StrEnum,
-)  # Imports StrEnum so enum values behave like strings in JSON and MongoDB-friendly output.
-from typing import (
-    Optional,
-)  # Imports Optional for fields that may be absent or unknown.
-
-from pydantic import (
-    Field,
-    model_validator,
-)  # Imports Field for field rules and model_validator for cross-field validation.
-
-from backend.models.base import (
-    BaseDocument,
-    PyObjectId,
-)  # Imports the shared base document and MongoDB ObjectId type.
+from __future__ import (annotations,)  # Enables modern Python type-hint behavior and forward references.
+from datetime import (date,)  # Imports the date type for coupon availability and expiration dates.
+from decimal import (Decimal,)  # Imports Decimal for money and percent fields to avoid floating-point rounding errors.
+from enum import (StrEnum,)  # Imports StrEnum so enum values behave like strings in JSON and MongoDB-friendly output.
+from typing import (Optional,)  # Imports Optional for fields that may be absent or unknown.
+from pydantic import (Field,model_validator,)  # Imports Field for field rules and model_validator for cross-field validation.
+from backend.models.base import (BaseDocument,PyObjectId,)  # Imports the shared base document and MongoDB ObjectId type.
 
 
 class CouponType(StrEnum):  # Defines the approved coupon source/type values.
