@@ -12,14 +12,9 @@ from __future__ import annotations  # Enables forward-compatible type annotation
 
 from typing import Optional  # Imports Optional for fields that may be missing.
 
-from pydantic import (
-    Field,
-)  # Imports Field for validation constraints and default values.
+from pydantic import (Field,)  # Imports Field for validation constraints and default values.
 
-from backend.models.base import (
-    BaseDocument,
-    PyObjectId,
-)  # Imports the shared document base and MongoDB object id type.
+from backend.models.base import (BaseDocument, PyObjectId,)  # Imports the shared document base and MongoDB object id type.
 
 
 class StoreModel(BaseDocument):  # Defines the store configuration document.

@@ -15,20 +15,11 @@ from __future__ import (
 from datetime import date  # Imports date for observed price record dates.
 from decimal import Decimal  # Imports Decimal for exact price-related values.
 from enum import StrEnum  # Imports StrEnum so enum values behave like strings.
-from typing import (
-    Optional,
-)  # Imports Optional for fields that may be missing or unknown.
+from typing import (Optional,)  # Imports Optional for fields that may be missing or unknown.
 
-from pydantic import (
-    BaseModel,
-    ConfigDict,
-    Field,
-)  # Imports Pydantic model tools and validation configuration.
+from pydantic import (BaseModel,ConfigDict,Field,)  # Imports Pydantic model tools and validation configuration.
 
-from backend.models.base import (
-    BaseDocument,
-    PyObjectId,
-)  # Imports the shared document base and MongoDB object id type.
+from backend.models.base import (BaseDocument,PyObjectId,)  # Imports the shared document base and MongoDB object id type.
 
 
 class ProductUnit(StrEnum):  # Defines allowed product measurement units.
