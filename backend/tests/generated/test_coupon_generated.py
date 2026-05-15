@@ -8,20 +8,40 @@
 # SDD Traceability: Supports SDD v5.0 backend generated model testing for coupon data validation.
 # =============================================================================
 
-from datetime import date  # Imports the date type for coupon date and expiration date values.
-from decimal import Decimal  # Imports Decimal for exact generated money and percent values.
+from datetime import (
+    date,
+)  # Imports the date type for coupon date and expiration date values.
+from decimal import (
+    Decimal,
+)  # Imports Decimal for exact generated money and percent values.
 
 import pytest  # Imports pytest for exception assertions.
-from bson import ObjectId  # Imports ObjectId to create realistic MongoDB store references.
-from hypothesis import given  # Imports the Hypothesis decorator that generates test inputs.
-from hypothesis import settings  # Imports Hypothesis settings to control generated example count.
-from hypothesis import strategies as st  # Imports Hypothesis strategies for generating input values.
-from pydantic import ValidationError  # Imports ValidationError to confirm invalid generated data fails.
+from bson import (
+    ObjectId,
+)  # Imports ObjectId to create realistic MongoDB store references.
+from hypothesis import (
+    given,
+)  # Imports the Hypothesis decorator that generates test inputs.
+from hypothesis import (
+    settings,
+)  # Imports Hypothesis settings to control generated example count.
+from hypothesis import (
+    strategies as st,
+)  # Imports Hypothesis strategies for generating input values.
+from pydantic import (
+    ValidationError,
+)  # Imports ValidationError to confirm invalid generated data fails.
 
-from backend.models.coupon import CouponModel, CouponScope, CouponType  # Imports the coupon model and enums under test.
+from backend.models.coupon import (
+    CouponModel,
+    CouponScope,
+    CouponType,
+)  # Imports the coupon model and enums under test.
 
 
-def build_generated_coupon_data() -> dict:  # Defines a reusable valid coupon payload for generated tests.
+def build_generated_coupon_data() -> (
+    dict
+):  # Defines a reusable valid coupon payload for generated tests.
     """Return valid base coupon data for generated test overrides."""  # Explains the helper purpose.
 
     return {  # Starts the valid generated coupon dictionary.
@@ -36,7 +56,9 @@ def build_generated_coupon_data() -> dict:  # Defines a reusable valid coupon pa
         "item_name": "Generated Coupon Item",  # Provides a generic generated-test item name.
         "item_size": "1 ct",  # Provides a simple item size.
         "brand": "Generated Brand",  # Provides a generic generated-test brand.
-        "discount_amount": Decimal("1.00"),  # Provides a valid default dollar discount amount.
+        "discount_amount": Decimal(
+            "1.00"
+        ),  # Provides a valid default dollar discount amount.
         "discount_percent": None,  # Leaves percent discount empty for dollar coupons.
         "discount_type": "dollars",  # Identifies the default coupon as a dollar discount.
         "required_purchase_quantity": 1,  # Requires one qualifying item.
@@ -57,105 +79,244 @@ def build_generated_coupon_data() -> dict:  # Defines a reusable valid coupon pa
     }  # Ends the valid generated coupon dictionary.
 
 
-@settings(max_examples=25)  # Limits generated examples so the test remains fast for local development.
-@given(discount_amount=st.decimals(min_value=Decimal("0.01"), max_value=Decimal("100.00"), places=2))  # Generates valid dollar discount amounts.
-def test_generated_valid_dollar_discount_amounts(discount_amount: Decimal) -> None:  # Tests many valid dollar coupon amounts.
+@settings(
+    max_examples=25
+)  # Limits generated examples so the test remains fast for local development.
+@given(
+    discount_amount=st.decimals(
+        min_value=Decimal("0.01"), max_value=Decimal("100.00"), places=2
+    )
+)  # Generates valid dollar discount amounts.
+def test_generated_valid_dollar_discount_amounts(
+    discount_amount: Decimal,
+) -> None:  # Tests many valid dollar coupon amounts.
     coupon_data = build_generated_coupon_data()  # Builds a valid coupon payload.
-    coupon_data["discount_type"] = "dollars"  # Sets the coupon discount type to dollars.
-    coupon_data["discount_amount"] = discount_amount  # Uses the generated dollar discount amount.
-    coupon_data["discount_percent"] = None  # Ensures dollar coupons do not include a percent discount.
+    coupon_data["discount_type"] = (
+        "dollars"  # Sets the coupon discount type to dollars.
+    )
+    coupon_data["discount_amount"] = (
+        discount_amount  # Uses the generated dollar discount amount.
+    )
+    coupon_data["discount_percent"] = (
+        None  # Ensures dollar coupons do not include a percent discount.
+    )
 
     coupon = CouponModel(**coupon_data)  # Creates the coupon model from generated data.
 
-    assert coupon.discount_type == "dollars"  # Confirms the generated coupon keeps the dollar discount type.
-    assert coupon.discount_amount == discount_amount  # Confirms the generated dollar amount is stored correctly.
-    assert coupon.discount_percent is None  # Confirms dollar coupons do not store a percent value.
+    assert (
+        coupon.discount_type == "dollars"
+    )  # Confirms the generated coupon keeps the dollar discount type.
+    assert (
+        coupon.discount_amount == discount_amount
+    )  # Confirms the generated dollar amount is stored correctly.
+    assert (
+        coupon.discount_percent is None
+    )  # Confirms dollar coupons do not store a percent value.
 
 
-@settings(max_examples=25)  # Limits generated examples so the test remains fast for local development.
-@given(discount_percent=st.decimals(min_value=Decimal("0.01"), max_value=Decimal("100.00"), places=2))  # Generates valid percent discount values.
-def test_generated_valid_percent_discount_values(discount_percent: Decimal) -> None:  # Tests many valid percent coupon values.
+@settings(
+    max_examples=25
+)  # Limits generated examples so the test remains fast for local development.
+@given(
+    discount_percent=st.decimals(
+        min_value=Decimal("0.01"), max_value=Decimal("100.00"), places=2
+    )
+)  # Generates valid percent discount values.
+def test_generated_valid_percent_discount_values(
+    discount_percent: Decimal,
+) -> None:  # Tests many valid percent coupon values.
     coupon_data = build_generated_coupon_data()  # Builds a valid coupon payload.
-    coupon_data["coupon_type"] = CouponType.MANUFACTURER  # Sets the coupon type to manufacturer.
-    coupon_data["is_store_coupon"] = False  # Marks the generated coupon as not store-issued.
-    coupon_data["is_manufacturer_coupon"] = True  # Marks the generated coupon as manufacturer-issued.
-    coupon_data["discount_type"] = "percent"  # Sets the coupon discount type to percent.
-    coupon_data["discount_amount"] = Decimal("0.00")  # Sets dollar amount to zero for percent coupons.
-    coupon_data["discount_percent"] = discount_percent  # Uses the generated percent discount value.
+    coupon_data["coupon_type"] = (
+        CouponType.MANUFACTURER
+    )  # Sets the coupon type to manufacturer.
+    coupon_data["is_store_coupon"] = (
+        False  # Marks the generated coupon as not store-issued.
+    )
+    coupon_data["is_manufacturer_coupon"] = (
+        True  # Marks the generated coupon as manufacturer-issued.
+    )
+    coupon_data["discount_type"] = (
+        "percent"  # Sets the coupon discount type to percent.
+    )
+    coupon_data["discount_amount"] = Decimal(
+        "0.00"
+    )  # Sets dollar amount to zero for percent coupons.
+    coupon_data["discount_percent"] = (
+        discount_percent  # Uses the generated percent discount value.
+    )
 
     coupon = CouponModel(**coupon_data)  # Creates the coupon model from generated data.
 
-    assert coupon.discount_type == "percent"  # Confirms the generated coupon keeps the percent discount type.
-    assert coupon.discount_amount == Decimal("0.00")  # Confirms percent coupons do not store a dollar discount amount.
-    assert coupon.discount_percent == discount_percent  # Confirms the generated percent value is stored correctly.
+    assert (
+        coupon.discount_type == "percent"
+    )  # Confirms the generated coupon keeps the percent discount type.
+    assert coupon.discount_amount == Decimal(
+        "0.00"
+    )  # Confirms percent coupons do not store a dollar discount amount.
+    assert (
+        coupon.discount_percent == discount_percent
+    )  # Confirms the generated percent value is stored correctly.
 
 
-@settings(max_examples=25)  # Limits generated examples so the test remains fast for local development.
-@given(required_purchase_amount=st.decimals(min_value=Decimal("0.01"), max_value=Decimal("500.00"), places=2))  # Generates valid basket threshold amounts.
-def test_generated_valid_basket_required_purchase_amounts(required_purchase_amount: Decimal) -> None:  # Tests many valid basket thresholds.
+@settings(
+    max_examples=25
+)  # Limits generated examples so the test remains fast for local development.
+@given(
+    required_purchase_amount=st.decimals(
+        min_value=Decimal("0.01"), max_value=Decimal("500.00"), places=2
+    )
+)  # Generates valid basket threshold amounts.
+def test_generated_valid_basket_required_purchase_amounts(
+    required_purchase_amount: Decimal,
+) -> None:  # Tests many valid basket thresholds.
     coupon_data = build_generated_coupon_data()  # Builds a valid coupon payload.
     coupon_data["coupon_scope"] = CouponScope.BASKET  # Sets the coupon scope to basket.
-    coupon_data["item_name"] = "Generated Basket Coupon"  # Uses a basket-level item name label.
-    coupon_data["required_purchase_amount"] = required_purchase_amount  # Uses the generated basket threshold.
+    coupon_data["item_name"] = (
+        "Generated Basket Coupon"  # Uses a basket-level item name label.
+    )
+    coupon_data["required_purchase_amount"] = (
+        required_purchase_amount  # Uses the generated basket threshold.
+    )
 
-    coupon = CouponModel(**coupon_data)  # Creates the coupon model from generated basket data.
+    coupon = CouponModel(
+        **coupon_data
+    )  # Creates the coupon model from generated basket data.
 
-    assert coupon.coupon_scope == CouponScope.BASKET  # Confirms the generated coupon is basket-scoped.
-    assert coupon.required_purchase_amount == required_purchase_amount  # Confirms the generated basket threshold is stored correctly.
+    assert (
+        coupon.coupon_scope == CouponScope.BASKET
+    )  # Confirms the generated coupon is basket-scoped.
+    assert (
+        coupon.required_purchase_amount == required_purchase_amount
+    )  # Confirms the generated basket threshold is stored correctly.
 
 
-@settings(max_examples=25)  # Limits generated examples so the test remains fast for local development.
-@given(required_purchase_quantity=st.integers(min_value=1, max_value=100))  # Generates valid required purchase quantities.
-def test_generated_valid_required_purchase_quantities(required_purchase_quantity: int) -> None:  # Tests many valid required quantities.
+@settings(
+    max_examples=25
+)  # Limits generated examples so the test remains fast for local development.
+@given(
+    required_purchase_quantity=st.integers(min_value=1, max_value=100)
+)  # Generates valid required purchase quantities.
+def test_generated_valid_required_purchase_quantities(
+    required_purchase_quantity: int,
+) -> None:  # Tests many valid required quantities.
     coupon_data = build_generated_coupon_data()  # Builds a valid coupon payload.
-    coupon_data["required_purchase_quantity"] = required_purchase_quantity  # Uses the generated required purchase quantity.
+    coupon_data["required_purchase_quantity"] = (
+        required_purchase_quantity  # Uses the generated required purchase quantity.
+    )
 
-    coupon = CouponModel(**coupon_data)  # Creates the coupon model from generated quantity data.
+    coupon = CouponModel(
+        **coupon_data
+    )  # Creates the coupon model from generated quantity data.
 
-    assert coupon.required_purchase_quantity == required_purchase_quantity  # Confirms the generated quantity is stored correctly.
+    assert (
+        coupon.required_purchase_quantity == required_purchase_quantity
+    )  # Confirms the generated quantity is stored correctly.
 
 
-@settings(max_examples=10)  # Limits generated examples because this test checks invalid values.
-@given(required_purchase_quantity=st.integers(max_value=0))  # Generates invalid required purchase quantities.
-def test_generated_rejects_invalid_required_purchase_quantities(required_purchase_quantity: int) -> None:  # Tests many invalid quantity values.
+@settings(
+    max_examples=10
+)  # Limits generated examples because this test checks invalid values.
+@given(
+    required_purchase_quantity=st.integers(max_value=0)
+)  # Generates invalid required purchase quantities.
+def test_generated_rejects_invalid_required_purchase_quantities(
+    required_purchase_quantity: int,
+) -> None:  # Tests many invalid quantity values.
     coupon_data = build_generated_coupon_data()  # Builds a valid coupon payload.
-    coupon_data["required_purchase_quantity"] = required_purchase_quantity  # Uses the generated invalid quantity.
+    coupon_data["required_purchase_quantity"] = (
+        required_purchase_quantity  # Uses the generated invalid quantity.
+    )
 
-    with pytest.raises(ValidationError):  # Expects Pydantic to reject invalid generated quantities.
-        CouponModel(**coupon_data)  # Attempts to create a coupon with an invalid required quantity.
+    with pytest.raises(
+        ValidationError
+    ):  # Expects Pydantic to reject invalid generated quantities.
+        CouponModel(
+            **coupon_data
+        )  # Attempts to create a coupon with an invalid required quantity.
 
 
-@settings(max_examples=10)  # Limits generated examples because this test checks invalid values.
-@given(discount_amount=st.decimals(max_value=Decimal("0.00"), places=2))  # Generates invalid non-positive dollar amounts.
-def test_generated_rejects_non_positive_dollar_discount_amounts(discount_amount: Decimal) -> None:  # Tests many invalid dollar amounts.
+@settings(
+    max_examples=10
+)  # Limits generated examples because this test checks invalid values.
+@given(
+    discount_amount=st.decimals(max_value=Decimal("0.00"), places=2)
+)  # Generates invalid non-positive dollar amounts.
+def test_generated_rejects_non_positive_dollar_discount_amounts(
+    discount_amount: Decimal,
+) -> None:  # Tests many invalid dollar amounts.
     coupon_data = build_generated_coupon_data()  # Builds a valid coupon payload.
-    coupon_data["discount_type"] = "dollars"  # Sets the coupon discount type to dollars.
-    coupon_data["discount_amount"] = discount_amount  # Uses the generated invalid dollar amount.
-    coupon_data["discount_percent"] = None  # Keeps percent discount empty for dollar coupons.
+    coupon_data["discount_type"] = (
+        "dollars"  # Sets the coupon discount type to dollars.
+    )
+    coupon_data["discount_amount"] = (
+        discount_amount  # Uses the generated invalid dollar amount.
+    )
+    coupon_data["discount_percent"] = (
+        None  # Keeps percent discount empty for dollar coupons.
+    )
 
-    with pytest.raises(ValidationError):  # Expects Pydantic to reject non-positive dollar discount amounts.
-        CouponModel(**coupon_data)  # Attempts to create a coupon with an invalid dollar amount.
+    with pytest.raises(
+        ValidationError
+    ):  # Expects Pydantic to reject non-positive dollar discount amounts.
+        CouponModel(
+            **coupon_data
+        )  # Attempts to create a coupon with an invalid dollar amount.
 
 
-@settings(max_examples=10)  # Limits generated examples because this test checks invalid values.
-@given(discount_percent=st.one_of(st.decimals(max_value=Decimal("0.00"), places=2), st.decimals(min_value=Decimal("100.01"), max_value=Decimal("500.00"), places=2)))  # Generates invalid percent values.
-def test_generated_rejects_invalid_percent_discount_values(discount_percent: Decimal) -> None:  # Tests many invalid percent values.
+@settings(
+    max_examples=10
+)  # Limits generated examples because this test checks invalid values.
+@given(
+    discount_percent=st.one_of(
+        st.decimals(max_value=Decimal("0.00"), places=2),
+        st.decimals(min_value=Decimal("100.01"), max_value=Decimal("500.00"), places=2),
+    )
+)  # Generates invalid percent values.
+def test_generated_rejects_invalid_percent_discount_values(
+    discount_percent: Decimal,
+) -> None:  # Tests many invalid percent values.
     coupon_data = build_generated_coupon_data()  # Builds a valid coupon payload.
-    coupon_data["coupon_type"] = CouponType.MANUFACTURER  # Sets the coupon type to manufacturer.
-    coupon_data["is_store_coupon"] = False  # Marks the generated coupon as not store-issued.
-    coupon_data["is_manufacturer_coupon"] = True  # Marks the generated coupon as manufacturer-issued.
-    coupon_data["discount_type"] = "percent"  # Sets the coupon discount type to percent.
-    coupon_data["discount_amount"] = Decimal("0.00")  # Sets dollar amount to zero for percent coupons.
-    coupon_data["discount_percent"] = discount_percent  # Uses the generated invalid percent value.
+    coupon_data["coupon_type"] = (
+        CouponType.MANUFACTURER
+    )  # Sets the coupon type to manufacturer.
+    coupon_data["is_store_coupon"] = (
+        False  # Marks the generated coupon as not store-issued.
+    )
+    coupon_data["is_manufacturer_coupon"] = (
+        True  # Marks the generated coupon as manufacturer-issued.
+    )
+    coupon_data["discount_type"] = (
+        "percent"  # Sets the coupon discount type to percent.
+    )
+    coupon_data["discount_amount"] = Decimal(
+        "0.00"
+    )  # Sets dollar amount to zero for percent coupons.
+    coupon_data["discount_percent"] = (
+        discount_percent  # Uses the generated invalid percent value.
+    )
 
-    with pytest.raises(ValidationError):  # Expects Pydantic to reject invalid generated percent values.
-        CouponModel(**coupon_data)  # Attempts to create a percent coupon with an invalid percent value.
+    with pytest.raises(
+        ValidationError
+    ):  # Expects Pydantic to reject invalid generated percent values.
+        CouponModel(
+            **coupon_data
+        )  # Attempts to create a percent coupon with an invalid percent value.
 
 
-def test_generated_rejects_expiration_date_before_coupon_date() -> None:  # Tests generated-file coverage for invalid date order.
+def test_generated_rejects_expiration_date_before_coupon_date() -> (
+    None
+):  # Tests generated-file coverage for invalid date order.
     coupon_data = build_generated_coupon_data()  # Builds a valid coupon payload.
-    coupon_data["coupon_date"] = date(2026, 6, 1)  # Sets the coupon start date after the expiration date.
-    coupon_data["expiration_date"] = date(2026, 5, 31)  # Sets the expiration date before the coupon start date.
+    coupon_data["coupon_date"] = date(
+        2026, 6, 1
+    )  # Sets the coupon start date after the expiration date.
+    coupon_data["expiration_date"] = date(
+        2026, 5, 31
+    )  # Sets the expiration date before the coupon start date.
 
-    with pytest.raises(ValidationError):  # Expects Pydantic to reject invalid date ordering.
-        CouponModel(**coupon_data)  # Attempts to create a coupon with invalid date order.
+    with pytest.raises(
+        ValidationError
+    ):  # Expects Pydantic to reject invalid date ordering.
+        CouponModel(
+            **coupon_data
+        )  # Attempts to create a coupon with invalid date order.
