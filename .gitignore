@@ -106,10 +106,14 @@ BACKEND_SETUP.md
 TERMINAL_REFERENCES_P1-03.md
 
 
+uploads/receipts/*.pdf
+uploads/receipts/*.jpg
+uploads/receipts/*.jpeg
+uploads/receipts/*.png
+!uploads/receipts/.gitkeep
 
 
-
-
+02-stage-1-extractor.md
 
 
 
