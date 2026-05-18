@@ -8,39 +8,22 @@
 # SDD Traceability: Supports SDD v5.0 reward accounts database design.
 # =============================================================================
 
-from __future__ import (
-    annotations,
-)  # Enables modern type hints without runtime forward-reference issues.
+from __future__ import annotations # Enables modern type hints without runtime forward-reference issues.
 
-from typing import (
-    Any,
-)  # Imports Any because MongoDB documents contain mixed field types.
+from typing import Any# Imports Any because MongoDB documents contain mixed field types.
 
-from motor.motor_asyncio import (
-    AsyncIOMotorDatabase,
-)  # Imports the async Motor database type.
+from motor.motor_asyncio import AsyncIOMotorDatabase # Imports the async Motor database type.
 
 from backend.data_access.base import MongoDataAccess  # Imports shared CRUD behavior.
-from backend.database import (
-    REWARD_ACCOUNTS_COLLECTION,
-)  # Imports the approved reward accounts collection name.
+
+from backend.database import REWARD_ACCOUNTS_COLLECTION # Imports the approved reward accounts collection name.
 
 
-class RewardAccountsDataAccess(
-    MongoDataAccess
-):  # Defines collection-specific access for reward accounts.
+class RewardAccountsDataAccess(MongoDataAccess):  # Defines collection-specific access for reward accounts.
     """Data access helper for reward account documents."""  # Documents the class purpose.
 
-    def __init__(
-        self, database: AsyncIOMotorDatabase
-    ) -> None:  # Receives the MongoDB database dependency.
-        super().__init__(
-            database[REWARD_ACCOUNTS_COLLECTION]
-        )  # Connects this helper to the reward accounts collection.
+    def __init__(self, database: AsyncIOMotorDatabase) -> None:  # Receives the MongoDB database dependency.
+        super().__init__(database[REWARD_ACCOUNTS_COLLECTION])
 
-    async def find_by_program(
-        self, program: str
-    ) -> dict[str, Any] | None:  # Finds one reward account by program.
-        return await self.collection.find_one(
-            {"program": program}
-        )  # Returns the matching reward account or None.
+    async def find_by_program(self, program: str) -> dict[str, Any] | None:  # Finds one reward account by program.
+        return await self.collection.find_one({"program": program})  # Returns the matching reward account or None.

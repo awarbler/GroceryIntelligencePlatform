@@ -8,35 +8,29 @@
 # SDD Traceability: Supports SDD v5.0 purchases database design.
 # =============================================================================
 
-from __future__ import (
-    annotations,
-)  # Enables modern type hints without runtime forward-reference issues.
+from __future__ import annotations # Enables modern type hints without runtime forward-reference issues.
 
-from typing import (
-    Any,
-)  # Imports Any because MongoDB documents contain mixed field types.
+from typing import Any# Imports Any because MongoDB documents contain mixed field types.
 
-from motor.motor_asyncio import (
-    AsyncIOMotorDatabase,
-)  # Imports the async Motor database type.
+from motor.motor_asyncio import AsyncIOMotorDatabase # Imports the async Motor database type.
 
 from backend.data_access.base import MongoDataAccess  # Imports shared CRUD behavior.
-from backend.database import (
-    PURCHASES_COLLECTION,
-)  # Imports the approved purchases collection name.
+from backend.database import  PURCHASES_COLLECTION# Imports the approved purchases collection name.
 
 
-class PurchasesDataAccess(
-    MongoDataAccess
-):  # Defines collection-specific access for purchases.
+class PurchasesDataAccess(MongoDataAccess):  # Defines collection-specific access for purchases.
     """Data access helper for purchase documents."""  # Documents the class purpose.
 
-    def __init__(
-        self, database: AsyncIOMotorDatabase
-    ) -> None:  # Receives the MongoDB database dependency.
-        super().__init__(
-            database[PURCHASES_COLLECTION]
-        )  # Connects this helper to the purchases collection.
+    def __init__(self, database: AsyncIOMotorDatabase) -> None:  # Receives the MongoDB database dependency.
+        super().__init__(database[PURCHASES_COLLECTION])  # Connects this helper to the purchases collection.
+        
+    async def insert_many_purchases(self, documents: list[dict[str, Any]]) -> list[str]:  # Inserts multiple approved purchase documents.
+            if not documents:  # Checks whether the loader received an empty purchase list.
+                return []  # Returns no IDs because there are no purchase documents to insert.
+
+            result = await self.collection.insert_many(documents)  # Inserts all approved purchase documents through the Data Access Layer.
+            return [str(inserted_id) for inserted_id in result.inserted_ids]  # Converts MongoDB ObjectIds to strings for the loader result.
+
 
     async def list_by_filters(
         self,  # Uses this purchases data access helper.
@@ -59,17 +53,13 @@ class PurchasesDataAccess(
         if category is not None:  # Checks whether a category filter was supplied.
             filters["category"] = category  # Adds the category filter.
 
-        if (
-            rebate_status is not None
-        ):  # Checks whether a rebate status filter was supplied.
+        if (rebate_status is not None):  # Checks whether a rebate status filter was supplied.
             filters["rebate_status"] = rebate_status  # Adds the rebate status filter.
 
         if source_type is not None:  # Checks whether a source type filter was supplied.
             filters["source_type"] = source_type  # Adds the source type filter.
 
-        if (
-            start_date is not None or end_date is not None
-        ):  # Checks whether a date range filter is needed.
+        if (start_date is not None or end_date is not None):  # Checks whether a date range filter is needed.
             date_filter: dict[str, str] = {}  # Builds a nested purchase date filter.
 
             if start_date is not None:  # Checks whether a start date was supplied.
@@ -83,3 +73,7 @@ class PurchasesDataAccess(
         return await self.list_records(
             filters=filters, skip=skip, limit=limit
         )  # Returns matching purchases.
+
+        
+        
+        

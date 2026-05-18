@@ -16,7 +16,8 @@ from motor.motor_asyncio import AsyncIOMotorDatabase  # Imports the async Motor 
 
 from backend.data_access.base import MongoDataAccess  # Imports shared CRUD behavior.
 from backend.database import PRODUCTS_COLLECTION  # Imports the approved products collection name.
-
+from datetime import date  # Imports date for price history observed_date values.
+from decimal import Decimal  # Imports Decimal for exact money values.
 
 class ProductsDataAccess(MongoDataAccess):  # Defines collection-specific access for products.
     """Data access helper for product documents."""  # Documents the class purpose.
@@ -54,3 +55,4 @@ class ProductsDataAccess(MongoDataAccess):  # Defines collection-specific access
             },  # Ends the MongoDB update document.
             upsert=True,  # Creates the product document if it does not already exist.
         )  # Ends the MongoDB update call.
+    

@@ -8,51 +8,31 @@
 # SDD Traceability: Supports SDD v5.0 backend folder structure and database design.
 # =============================================================================
 
-from __future__ import (
-    annotations,
-)  # Enables modern type hints without runtime forward-reference issues.
+from __future__ import annotations# Enables modern type hints without runtime forward-reference issues.
 
-from collections.abc import (
-    Mapping,
-)  # Imports Mapping for read-only dictionary-style inputs.
-from typing import (
-    Any,
-)  # Imports Any because MongoDB document values vary by collection.
+from collections.abc import Mapping# Imports Mapping for read-only dictionary-style inputs.
+from typing import Any# Imports Any because MongoDB document values vary by collection.
 
 from bson import ObjectId  # Imports ObjectId for MongoDB primary key handling.
-from motor.motor_asyncio import (
-    AsyncIOMotorCollection,
-)  # Imports the async Motor collection type.
+from motor.motor_asyncio import AsyncIOMotorCollection # Imports the async Motor collection type.
 
 
-DEFAULT_LIMIT = (
-    100  # Defines the default maximum number of documents returned by list queries.
-)
+DEFAULT_LIMIT = (100 )
 
-MAX_LIMIT = (
-    500  # Defines the hard cap for list queries to prevent accidental large reads.
-)
+MAX_LIMIT = (500)
 
 
-class DataAccessError(
-    RuntimeError
-):  # Defines a shared Data Access Layer exception type.
+class DataAccessError(RuntimeError):  # Defines a shared Data Access Layer exception type.
     """Raised when a data access operation cannot be completed."""  # Documents the exception purpose.
 
 
-def normalize_object_id(
-    record_id: str | ObjectId,
-) -> ObjectId:  # Converts incoming IDs to ObjectId.
+def normalize_object_id(record_id: str | ObjectId,) -> ObjectId:  # Converts incoming IDs to ObjectId.
     """Return a valid MongoDB ObjectId from a string or ObjectId."""  # Documents the helper behavior.
     if isinstance(record_id, ObjectId):  # Checks whether the ID is already an ObjectId.
         return record_id  # Returns the existing ObjectId unchanged.
 
-    if not ObjectId.is_valid(
-        record_id
-    ):  # Checks whether the string can become an ObjectId.
-        raise ValueError(
-            f"Invalid MongoDB ObjectId: {record_id!r}"
-        )  # Raises a safe validation error.
+    if not ObjectId.is_valid(record_id):  # Checks whether the string can become an ObjectId.
+        raise ValueError(f"Invalid MongoDB ObjectId: {record_id!r}")  # Raises a safe validation error.
 
     return ObjectId(record_id)  # Converts the valid string into an ObjectId.
 
@@ -60,53 +40,29 @@ def normalize_object_id(
 class MongoDataAccess:  # Defines the shared async CRUD helper for one collection.
     """Shared async CRUD helper for one MongoDB collection."""  # Documents the class purpose.
 
-    def __init__(
-        self, collection: AsyncIOMotorCollection
-    ) -> None:  # Receives the MongoDB collection dependency.
+    def __init__(self, collection: AsyncIOMotorCollection) -> None:  # Receives the MongoDB collection dependency.
         self.collection = collection  # Stores the collection for CRUD methods.
 
-    async def create_one(
-        self, data: Mapping[str, Any]
-    ) -> str:  # Inserts one validated document.
+    async def create_one(self, data: Mapping[str, Any]) -> str:  # Inserts one validated document.
         document = dict(data)  # Copies the incoming mapping into a mutable dictionary.
-        result = await self.collection.insert_one(
-            document
-        )  # Inserts the document into MongoDB.
+        result = await self.collection.insert_one(document)  # Inserts the document into MongoDB.
         return str(result.inserted_id)  # Returns the inserted MongoDB ID as a string.
 
-    async def find_one_by_id(
-        self, record_id: str | ObjectId
-    ) -> dict[str, Any] | None:  # Finds one document by ID.
+    async def find_one_by_id(self, record_id: str | ObjectId) -> dict[str, Any] | None:  # Finds one document by ID.
         try:  # Starts safe ObjectId conversion.
-            object_id = normalize_object_id(
-                record_id
-            )  # Converts the incoming ID to ObjectId.
+            object_id = normalize_object_id(record_id)  # Converts the incoming ID to ObjectId.
         except ValueError:  # Handles invalid ObjectId strings.
             return None  # Returns None instead of leaking a low-level database error.
 
-        document = await self.collection.find_one(
-            {"_id": object_id}
-        )  # Queries MongoDB by primary key.
+        document = await self.collection.find_one({"_id": object_id})  # Queries MongoDB by primary key.
         return document  # Returns the found document or None.
 
-    async def list_records(
-        self,  # Uses the current Data Access Layer instance.
-        filters: Mapping[str, Any] | None = None,  # Receives optional query filters.
-        skip: int = 0,  # Receives the number of records to skip.
-        limit: int = DEFAULT_LIMIT,  # Receives the requested result limit.
-    ) -> list[dict[str, Any]]:  # Returns MongoDB documents as dictionaries.
-        safe_limit = min(
-            max(limit, 1), MAX_LIMIT
-        )  # Forces the limit into a safe allowed range.
+    async def list_records(self, filters: Mapping[str, Any] | None = None,skip: int = 0, limit: int = DEFAULT_LIMIT ) -> list[dict[str, Any]]:  # Returns MongoDB documents as dictionaries.
+        safe_limit = min(max(limit, 1), MAX_LIMIT)  # Forces the limit into a safe allowed range.
         safe_skip = max(skip, 0)  # Prevents negative skip values.
-        safe_filters = dict(
-            filters or {}
-        )  # Copies filters so caller input is not mutated.
-        cursor = (
-            self.collection.find(safe_filters).skip(safe_skip).limit(safe_limit)
-        )  # Builds the async cursor.
-        return await cursor.to_list(
-            length=safe_limit
+        safe_filters = dict( filters or {})  # Copies filters so caller input is not mutated.
+        cursor = (self.collection.find(safe_filters).skip(safe_skip).limit(safe_limit))  # Builds the async cursor.
+        return await cursor.to_list(length=safe_limit
         )  # Converts the cursor into a list.
 
     async def update_one_by_id(

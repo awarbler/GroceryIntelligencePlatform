@@ -7,36 +7,24 @@
 # SRS Traceability: Supports SRS v5.0 CP-018, SE-009, and Section 19 coupons collection.
 # SDD Traceability: Supports SDD v5.0 coupons database design.
 # =============================================================================
+from __future__ import annotations# Enables modern type hints without runtime forward-reference issues.
 
-from __future__ import (
-    annotations,
-)  # Enables modern type hints without runtime forward-reference issues.
+from collections.abc import Mapping# Imports Mapping for read-only dictionary-style inputs.
+from typing import Any# Imports Any because MongoDB document values vary by collection.
 
-from typing import (
-    Any,
-)  # Imports Any because MongoDB documents contain mixed field types.
+from bson import ObjectId  # Imports ObjectId for MongoDB primary key handling.
+from motor.motor_asyncio import AsyncIOMotorCollection # Imports the async Motor collection type.
 
-from motor.motor_asyncio import (
-    AsyncIOMotorDatabase,
-)  # Imports the async Motor database type.
 
 from backend.data_access.base import MongoDataAccess  # Imports shared CRUD behavior.
-from backend.database import (
-    COUPONS_COLLECTION,
-)  # Imports the approved coupons collection name.
+from backend.database import COUPONS_COLLECTION # Imports the approved coupons collection name.
 
 
-class CouponsDataAccess(
-    MongoDataAccess
-):  # Defines collection-specific access for coupons.
+class CouponsDataAccess(MongoDataAccess):  # Defines collection-specific access for coupons.
     """Data access helper for coupon documents."""  # Documents the class purpose.
 
-    def __init__(
-        self, database: AsyncIOMotorDatabase
-    ) -> None:  # Receives the MongoDB database dependency.
-        super().__init__(
-            database[COUPONS_COLLECTION]
-        )  # Connects this helper to the coupons collection.
+    def __init__(self, database: AsyncIOMotorDatabase) -> None:  # Receives the MongoDB database dependency.
+        super().__init__(database[COUPONS_COLLECTION])  # Connects this helper to the coupons collection.
 
     async def list_by_filters(
         self,  # Uses this coupons data access helper.
