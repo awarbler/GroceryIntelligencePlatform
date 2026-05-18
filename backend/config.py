@@ -37,7 +37,7 @@ class Settings(BaseSettings):
     # database settings
     mongo_uri: str = Field(alias="MONGO_URI")
     mongo_db: str = Field(alias="MONGO_DB")  # main mongo database name
-    test_mongo_db: str = Field(alias="TEST_MONGO_DB")  # test database name
+    test_mongo_db: str = Field(alias="grocery_intelligence_test")  # test database name
     redis_url: str = Field(alias="REDIS_URL")  # loads the Redis connection URL from REDIS_URL
     
     # security settings

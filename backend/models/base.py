@@ -77,3 +77,28 @@ class StandardResponse(BaseModel, Generic[T]):
     errors: list[str] = Field(default_factory=list)
     # store optional response metadata
     meta: dict[str, Any] = Field(default_factory=dict)
+
+class ErrorDetail(BaseModel):  # Defines one structured API error item.
+    model_config = ConfigDict(extra="forbid", validate_default=True)  # Rejects unexpected response fields.
+
+    field: str | None = None  # Stores the field name for field-specific errors.
+    message: str  # Stores the safe human-readable error message.
+    code: str  # Stores the stable machine-readable error code.
+
+
+class ErrorResponse(BaseModel):  # Defines the standard API failure response.
+    model_config = ConfigDict(extra="forbid", validate_default=True)  # Rejects unexpected response fields.
+
+    success: bool = False  # Marks the response as failed.
+    data: None = None  # Keeps the standard API response shape consistent.
+    errors: list[ErrorDetail] = Field(default_factory=list)  # Stores structured error details.
+    meta: dict[str, Any] = Field(default_factory=dict)  # Stores optional metadata.
+
+
+class SuccessResponse(BaseModel, Generic[T]):  # Defines the standard API success response.
+    model_config = ConfigDict(extra="forbid", validate_default=True)  # Rejects unexpected response fields.
+
+    success: bool = True  # Marks the response as successful.
+    data: Optional[T] = None  # Stores the response payload.
+    errors: list[ErrorDetail] = Field(default_factory=list)  # Keeps errors empty on success.
+    meta: dict[str, Any] = Field(default_factory=dict)  # Stores optional metadata.
