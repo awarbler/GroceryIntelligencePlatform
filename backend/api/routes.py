@@ -1,12 +1,12 @@
-# =============================================================================
-# File: routes.py
-# Project: Grocery Intelligence Platform
-# Author: Anita Woodford
-# Description: Registers backend API routers for the FastAPI application.
-# Security Note: Registers the global rate-limit exception handler.
-# SRS Traceability: Supports SRS v5.0 SE-008 and SE-009.
-# SDD Traceability: Supports SDD v5.0 API endpoint design.
-# =============================================================================
+# =============================================================================  # File header separator.
+# File: routes.py  # Identifies this route registration file.
+# Project: Grocery Intelligence Platform  # Identifies the project.
+# Author: Anita Woodford  # Identifies the project author.
+# Description: Registers backend API routers for the FastAPI application.  # Explains the file purpose.
+# Security Note: Registers the global rate-limit exception handler.  # States security concern.
+# SRS Traceability: Supports SRS v5.0 SE-008, SE-009, ET-001 through ET-005, and HC-001 through HC-009.  # Maps to SRS.
+# SDD Traceability: Supports SDD v5.0 API endpoint design.  # Maps to SDD.
+# =============================================================================  # File header separator.
 
 from __future__ import annotations  # Enables modern type annotation behavior.
 
@@ -15,6 +15,7 @@ from slowapi import _rate_limit_exceeded_handler  # Imports the default SlowAPI 
 from slowapi.errors import RateLimitExceeded  # Imports the SlowAPI rate-limit exception.
 
 from backend.api.auth import router as auth_router  # Imports the authentication router.
+from backend.api.etl import router as etl_router  # Imports the ETL and correction router.
 from backend.api.rate_limit import limiter  # Imports the shared application limiter.
 
 
@@ -22,3 +23,4 @@ def register_routes(app: FastAPI) -> None:  # Registers all API routers on the F
     app.state.limiter = limiter  # Stores the limiter on app state for SlowAPI.
     app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)  # Registers the rate-limit error handler.
     app.include_router(auth_router, prefix="/api/v1")  # Mounts auth routes under /api/v1/auth.
+    app.include_router(etl_router, prefix="/api/v1")  # Mounts ETL and correction routes under /api/v1.
