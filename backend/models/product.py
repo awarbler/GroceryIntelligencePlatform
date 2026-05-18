@@ -89,3 +89,15 @@ class ProductModel(BaseDocument):  # Defines the normalized product catalog docu
             {"canonical_name": canonical_name},  # Finds the product by canonical name.
             {"$push": {"price_history": price_entry}},  # Appends the price entry to price_history.
         )  # Ends the MongoDB update call.
+        
+        async def add_product_alias(  # Defines owner-approved alias saving for P1-11 normalization corrections.
+            self,  # Receives the product data access instance.
+            canonical_name: str,  # Receives the canonical product name.
+            alias: str,  # Receives the raw alias to add.
+        ) -> bool:  # Returns whether a product document was updated.
+            result = await self.collection.update_one(  # Updates products through the Data Access Layer.
+                {"canonical_name": canonical_name},  # Finds the product by canonical name.
+                {"$addToSet": {"aliases": alias}},  # Adds the alias without creating duplicates.
+                upsert=False,  # Avoids creating accidental products from correction mistakes.
+            )  # Ends the MongoDB update operation.
+            return result.matched_count > 0  # Returns True only when an existing product was matched.
