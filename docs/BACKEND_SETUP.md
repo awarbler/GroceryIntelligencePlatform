@@ -165,7 +165,7 @@ docker-compose logs -f mongodb
 
 ### Completely Remove Containers and Data
 
-⚠️ **Warning:** This deletes all data. Only use if you want a fresh start:
+**Warning:** This deletes all data. Only use if you want a fresh start:
 
 ```bash
 docker-compose down -v

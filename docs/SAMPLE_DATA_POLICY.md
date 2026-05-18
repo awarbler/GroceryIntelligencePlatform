@@ -68,3 +68,5 @@ Tax $<amount>
 Driver tip $<amount>
 Total $<amount>
 Your savings -$<amount>
+Order placed on <MM/DD/YY>
+Order # <synthetic-id>
