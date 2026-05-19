@@ -49,9 +49,11 @@ class ProductModel(BaseDocument):  # Defines the normalized product catalog docu
 
     model_config = ConfigDict(extra="forbid")  # Rejects unexpected fields during validation.
     canonical_name: str = Field(..., min_length=1)  # Stores the normalized product name used for matching.
+    item_name: str | None = Field(default=None, min_length=1)  # Stores the owner-facing shopping-list item name.
     raw_names: list[str] = Field(default_factory=list)  # Stores receipt, ad, or coupon names seen before normalization.
     category: str = Field(..., min_length=1)  # Stores the product category such as grocery, household, or personal care.
     brand: Optional[str] = Field(default=None)  # Stores the brand when known.
+    size: str | None = Field(default=None, min_length=1)  # Stores the owner-facing package size text.
     size_value: Optional[Decimal] = Field(default=None, ge=Decimal("0.00"))  # Stores the numeric product size when known.
     size_unit: Optional[ProductUnit] = Field(default=None)  # Stores the unit connected to the product size.
     package_count: int = Field(default=1, ge=1)  # Stores how many units are included in the package.
@@ -61,6 +63,8 @@ class ProductModel(BaseDocument):  # Defines the normalized product catalog docu
     last_seen_price: Optional[Decimal] = Field(default=None, ge=Decimal("0.00"))  # Stores the most recent observed shelf or sale price.
     size_variants: list[str] = Field(default_factory=list)  # Stores acceptable product size strings used during matching.
     avg_price_by_store: dict[str, Decimal] = Field(default_factory=dict)  # Stores average product price by store identifier.
+    avg_price: Decimal | None = Field(default=None, ge=Decimal("0.00"))  # Stores the My Items running average price.
+    avg_price_observation_count: int = Field(default=0, ge=0)  # Stores how many observations were used for avg_price.    
     acceptable_substitutes: list[PyObjectId] = Field(default_factory=list)  # Stores product references that can substitute for this product.
     price_history: list[PriceRecord] = Field(default_factory=list)  # Stores observed price records over time.
     is_active: bool = Field(default=True)  # Stores whether the product is active for matching and reports.
