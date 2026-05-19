@@ -19,9 +19,12 @@ from backend.api.etl import router as etl_router  # Imports the ETL and correcti
 from backend.api.rate_limit import limiter  # Imports the shared application limiter.
 from backend.api.purchases import router as purchases_router  # Imports purchase CRUD routes.
 
+from backend.api.my_items import router as my_items_router  # Imports My Items CRUD routes.
+
 def register_routes(app: FastAPI) -> None:  # Registers all API routers on the FastAPI app.
     app.state.limiter = limiter  # Stores the limiter on app state for SlowAPI.
     app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)  # Registers the rate-limit error handler.
     app.include_router(auth_router, prefix="/api/v1")  # Mounts auth routes under /api/v1/auth.
     app.include_router(etl_router, prefix="/api/v1")  # Mounts ETL and correction routes under /api/v1.
     app.include_router(purchases_router, prefix="/api/v1")  # Mounts purchase CRUD routes under /api/v1/purchases.
+    app.include_router(my_items_router, prefix="/api/v1")  # Mounts My Items CRUD routes under /api/v1/my-items.
