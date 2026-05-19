@@ -19,8 +19,6 @@ from pydantic import BaseModel,ConfigDict,Field# Imports Pydantic model tools an
 
 from backend.models.base import BaseDocument,PyObjectId  # Imports the shared document base and MongoDB object id type.
 
-from datetime import date  # Imports date for price history observed_date values.
-from decimal import Decimal  # Imports Decimal for exact money values.
 class ProductUnit(StrEnum):  # Defines allowed product measurement units.
     """Enum representing supported product size units."""  # Documents the purpose of the enum.
 
@@ -67,37 +65,7 @@ class ProductModel(BaseDocument):  # Defines the normalized product catalog docu
     price_history: list[PriceRecord] = Field(default_factory=list)  # Stores observed price records over time.
     is_active: bool = Field(default=True)  # Stores whether the product is active for matching and reports.
     notes: str = Field(default="")  # Stores optional product notes.
+    is_my_item: bool = Field(default=False)  # Stores whether this product is on the owner regular shopping list.
+    preferred_stores: list[str] = Field(default_factory=list)  # Stores store identifiers where the owner prefers to buy this item.
 
-    async def update_price_history(  # Appends one observed price entry to a product document.
-        self,  # Uses the current ProductsDataAccess instance.
-        canonical_name: str,  # Receives the normalized product name used to find the product.
-        store_ref: str,  # Receives the Phase 1 store identifier string, such as "heb".
-        regular_price: Decimal,  # Receives the observed regular price as a Decimal.
-        sale_price: Decimal | None,  # Receives the observed sale price when known.
-        observed_date: date,  # Receives the purchase date as a date object.
-        source: str,  # Receives the source label, such as "heb_online_receipt".
-    ) -> None:  # Returns no value after the update.
-        price_entry: dict[str, object] = {  # Builds one price history entry using PriceRecord-style field names.
-            "store_ref": store_ref,  # Stores the store reference for this price observation.
-            "regular_price": regular_price,  # Stores the observed regular price.
-            "sale_price": sale_price,  # Stores the observed sale price when available.
-            "observed_date": observed_date,  # Stores the date when this price was observed.
-            "source": source,  # Stores where the price observation came from.
-        }  # Ends the price history entry.
-
-        await self.collection.update_one(  # Updates the matching product document.
-            {"canonical_name": canonical_name},  # Finds the product by canonical name.
-            {"$push": {"price_history": price_entry}},  # Appends the price entry to price_history.
-        )  # Ends the MongoDB update call.
-        
-        async def add_product_alias(  # Defines owner-approved alias saving for P1-11 normalization corrections.
-            self,  # Receives the product data access instance.
-            canonical_name: str,  # Receives the canonical product name.
-            alias: str,  # Receives the raw alias to add.
-        ) -> bool:  # Returns whether a product document was updated.
-            result = await self.collection.update_one(  # Updates products through the Data Access Layer.
-                {"canonical_name": canonical_name},  # Finds the product by canonical name.
-                {"$addToSet": {"aliases": alias}},  # Adds the alias without creating duplicates.
-                upsert=False,  # Avoids creating accidental products from correction mistakes.
-            )  # Ends the MongoDB update operation.
-            return result.matched_count > 0  # Returns True only when an existing product was matched.
+    

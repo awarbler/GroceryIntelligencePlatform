@@ -55,4 +55,62 @@ class ProductsDataAccess(MongoDataAccess):  # Defines collection-specific access
             },  # Ends the MongoDB update document.
             upsert=True,  # Creates the product document if it does not already exist.
         )  # Ends the MongoDB update call.
-    
+        async def update_price_history(  # Appends one observed price entry to a product document.
+            self,
+            canonical_name: str,
+            store_ref: str,
+            regular_price: Decimal,
+            sale_price: Decimal | None,
+            observed_date: date,
+            source: str,
+        ) -> None:
+            from datetime import datetime, timezone
+            price_entry: dict = {
+                "store_ref": store_ref,
+                "regular_price": float(regular_price),  # Convert Decimal for MongoDB BSON.
+                "sale_price": float(sale_price) if sale_price is not None else None,
+                "observed_date": datetime(observed_date.year, observed_date.month, observed_date.day, tzinfo=timezone.utc),  # Convert date to datetime for MongoDB BSON.
+                "source": source,
+            }
+            await self.collection.update_one(
+                {"canonical_name": canonical_name},
+                {"$push": {"price_history": price_entry}},
+            )
+
+        async def add_product_alias(  # Adds one owner-approved alias to a product document.
+            self,
+            canonical_name: str,
+            alias: str,
+        ) -> bool:
+            result = await self.collection.update_one(
+                {"canonical_name": canonical_name},
+                {"$addToSet": {"aliases": alias}},
+                upsert=False,
+            )
+            return result.matched_count > 0
+
+        async def list_my_items(self) -> list[dict]:  # Returns all products where is_my_item is True.
+            return await self.list_records(filters={"is_my_item": True})
+
+        async def find_by_id(self, product_id: str) -> dict | None:  # Finds one product by ID.
+            return await self.find_one_by_id(product_id)
+
+        async def update_my_item(self, product_id: str, updates: dict) -> bool:  # Updates one product by ID.
+            return await self.update_one_by_id(product_id, updates)
+
+        async def delete_my_item(self, product_id: str) -> bool:  # Deletes one product by ID.
+            return await self.delete_one_by_id(product_id)
+
+        async def create_my_item(self, document: dict) -> str:  # Inserts one My Items product document.
+            return await self.create_one(document)
+
+        async def update_avg_price_for_store(  # Updates avg_price_by_store for one store after a purchase is saved.
+            self,
+            canonical_name: str,
+            store_id: str,
+            price: float,
+        ) -> None:
+            await self.collection.update_one(
+                {"canonical_name": canonical_name},
+                {"$set": {f"avg_price_by_store.{store_id}": price}},
+            )
