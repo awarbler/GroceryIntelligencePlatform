@@ -18,7 +18,7 @@ from motor.motor_asyncio import AsyncIOMotorCollection # Imports the async Motor
 
 from backend.data_access.base import MongoDataAccess  # Imports shared CRUD behavior.
 from backend.database import COUPONS_COLLECTION # Imports the approved coupons collection name.
-
+from motor.motor_asyncio import AsyncIOMotorDatabase  # Imports the async MongoDB database dependency type.
 
 class CouponsDataAccess(MongoDataAccess):  # Defines collection-specific access for coupons.
     """Data access helper for coupon documents."""  # Documents the class purpose.
@@ -50,3 +50,23 @@ class CouponsDataAccess(MongoDataAccess):  # Defines collection-specific access 
         return await self.list_records(
             filters=filters, skip=skip, limit=limit
         )  # Returns matching coupons.
+    async def create_coupon(
+        self,
+        coupon_data: Mapping[str, Any],
+    ) -> str:
+        """Creates one coupon document."""  # Documents purpose.
+
+        return await self.create_one(
+            coupon_data
+        )  # Reuses shared DAL create behavior.
+
+
+    async def delete_coupon(
+        self,
+        coupon_id: str,
+    ) -> bool:
+        """Deletes one coupon document."""  # Documents purpose.
+
+        return await self.delete_one_by_id(
+            coupon_id
+        )  # Reuses shared DAL delete behavior.
