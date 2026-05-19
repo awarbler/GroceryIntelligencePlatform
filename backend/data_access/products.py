@@ -1,5 +1,5 @@
 # =============================================================================
-# File: products.py
+# File: data_access/products.py
 # Project: Grocery Intelligence Platform
 # Author: Anita Woodford
 # Description: Provides Data Access Layer operations for the products collection.

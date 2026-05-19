@@ -1,3 +1,14 @@
+# =============================================================================
+# File: backend/etl/extractor.py
+# Project: Grocery Intelligence Platform
+# Author: Anita Woodford
+# Description: Stage 1 ETL extractor for HEB online receipt PDFs.
+# Security Note: Extracted data must not contain personally identifiable information (PII).
+# SRS Traceability: Supports SRS v5.0 SE-008, SE-
+# 009, ET-001 through ET-005, and HC-001 through HC-009.
+# SDD Traceability: Supports SDD v5.0 ETL design and modular architecture.
+# ==============================================================================
+
 """Stage 1 ETL extractor for HEB online receipt PDFs."""  # Defines the module purpose for maintainers and tests.
 
 from __future__ import annotations  # Enables modern type hints and forward references safely.

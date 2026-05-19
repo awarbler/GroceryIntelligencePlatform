@@ -1,5 +1,5 @@
 # ==============================================================================
-# File: database.py
+# File: backend/database.py
 # Project: GroceryIntelligence Platform
 # Author: Anita Woodford
 # Description: This file creates one shared async MongoDB client, exposes

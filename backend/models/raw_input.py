@@ -1,5 +1,5 @@
 # =============================================================================
-# File: raw_input.py
+# File: models/raw_input.py
 # Project: Grocery Intelligence Platform
 # Author: Anita Woodford
 # Description: Defines the raw input document model used to preserve uploaded receipt, PDF, photo, CSV, and manual-entry data before parsing.

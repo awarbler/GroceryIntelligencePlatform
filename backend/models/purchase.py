@@ -1,5 +1,5 @@
 # =============================================================================
-# File: purchase.py
+# File: models/purchase.py
 # Project: Grocery Intelligence Platform
 # Author: Anita Woodford
 # Description: Defines purchase models for tracking store purchase facts before report calculations.

@@ -1,5 +1,5 @@
 # =============================================================================
-# File: deal_matches.py
+# File: data_access/deal_matches.py
 # Project: Grocery Intelligence Platform
 # Author: Anita Woodford
 # Description: Provides Data Access Layer operations for the deal_matches collection.

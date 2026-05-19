@@ -1,5 +1,5 @@
 # =============================================================================
-# File: coupons.py
+# File: data_access/coupons.py
 # Project: Grocery Intelligence Platform
 # Author: Anita Woodford
 # Description: Provides Data Access Layer operations for the coupons collection.

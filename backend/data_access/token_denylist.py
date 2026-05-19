@@ -1,5 +1,5 @@
 # =============================================================================
-# File: token_denylist.py
+# File: data_access/token_denylist.py
 # Project: Grocery Intelligence Platform
 # Author: Anita Woodford
 # Description: Provides Data Access Layer operations for revoked JWT token identifiers.

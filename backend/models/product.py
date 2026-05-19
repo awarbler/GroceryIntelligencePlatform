@@ -1,5 +1,5 @@
 # =============================================================================
-# File: product.py
+# File: models/product.py
 # Project: Grocery Intelligence Platform
 # Author: Anita Woodford
 # Description: Defines product catalog and price history models for normalized grocery tracking.

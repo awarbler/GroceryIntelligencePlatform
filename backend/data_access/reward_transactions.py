@@ -1,5 +1,5 @@
 # =============================================================================
-# File: reward_transactions.py
+# File: data_access/reward_transactions.py
 # Project: Grocery Intelligence Platform
 # Author: Anita Woodford
 # Description: Provides Data Access Layer operations for the reward_transactions collection.

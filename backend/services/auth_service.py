@@ -1,5 +1,5 @@
 # =============================================================================
-# File: auth_service.py
+# File: services/auth_service.py
 # Project: Grocery Intelligence Platform
 # Author: Anita Woodford
 # Description: Provides authentication business logic for password hashing, JWT creation, JWT validation, and logout token denial.

@@ -1,5 +1,5 @@
 # =============================================================================
-# File: main.py
+# File: backend/main.py
 # Project: GroceryIntelligence Platform
 # Author: Anita Woodford
 # Purpose: FASTAPI application entry point for backend API service
@@ -21,6 +21,7 @@ import logging  # Imports logging for safe server-side error records.
 from fastapi.encoders import jsonable_encoder  # Converts Pydantic models into JSON-safe values.
 from fastapi.exceptions import RequestValidationError  # Imports FastAPI request validation error type.
 from fastapi.responses import JSONResponse  # Allows custom JSON error responses.
+from fastapi import FastAPI, HTTPException, Request, status  # Imports FastAPI app tools and exception handler types.
 
 from backend.models.base import ErrorDetail  # Imports one structured error item.
 from backend.models.base import ErrorResponse  # Imports standard failure response wrapper.
@@ -30,7 +31,8 @@ from backend.data_access.token_denylist import ensure_token_denylist_indexes  # 
 from backend.database import connect_to_mongodb  # Imports MongoDB startup connection logic.
 from backend.database import disconnect_from_mongodb  # Imports MongoDB shutdown disconnection logic.
 from backend.database import get_db  # Imports the active MongoDB database accessor.
-from fastapi import FastAPI, HTTPException, Request, status  # Imports FastAPI app tools and exception handler types.
+from backend.api.purchases import router as purchases_router  # Imports purchase CRUD routes.
+
 
 logger = logging.getLogger(__name__)  # Creates a logger for this module.
 

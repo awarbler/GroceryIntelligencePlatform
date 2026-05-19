@@ -1,5 +1,5 @@
 # =============================================================================  # File header separator.
-# File: pipeline.py  # Identifies this ETL orchestration file.
+# File: backend/etl/pipeline.py  # Identifies this ETL orchestration file.
 # Project: Grocery Intelligence Platform  # Identifies the project.
 # Author: Anita Woodford  # Identifies the project author.
 # Description: Orchestrates Stage 1 extraction, Stage 2 parsing/normalization, correction, and Stage 3 loading.  # Explains the file purpose.
