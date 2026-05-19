@@ -20,11 +20,15 @@ from backend.api.rate_limit import limiter  # Imports the shared application lim
 from backend.api.purchases import router as purchases_router  # Imports purchase CRUD routes.
 
 from backend.api.my_items import router as my_items_router  # Imports My Items CRUD routes.
+from backend.api.ad_etl import router as ad_etl_router  # Imports H-E-B weekly ad ETL routes.
+from backend.api.ads import router as ads_router  # Imports H-E-B weekly ad retrieval routes.
 
 def register_routes(app: FastAPI) -> None:  # Registers all API routers on the FastAPI app.
     app.state.limiter = limiter  # Stores the limiter on app state for SlowAPI.
     app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)  # Registers the rate-limit error handler.
     app.include_router(auth_router, prefix="/api/v1")  # Mounts auth routes under /api/v1/auth.
     app.include_router(etl_router, prefix="/api/v1")  # Mounts ETL and correction routes under /api/v1.
+    app.include_router(ads_router, prefix="/api/v1")  # Mounts ad retrieval routes under /api/v1/ads.
+    app.include_router(ad_etl_router, prefix="/api/v1")  # Mounts ad ETL routes under /api/v1/ad-etl.
     app.include_router(purchases_router, prefix="/api/v1")  # Mounts purchase CRUD routes under /api/v1/purchases.
     app.include_router(my_items_router, prefix="/api/v1")  # Mounts My Items CRUD routes under /api/v1/my-items.
