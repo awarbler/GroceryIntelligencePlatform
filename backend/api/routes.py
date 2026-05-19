@@ -22,6 +22,9 @@ from backend.api.purchases import router as purchases_router  # Imports purchase
 from backend.api.my_items import router as my_items_router  # Imports My Items CRUD routes.
 from backend.api.ad_etl import router as ad_etl_router  # Imports H-E-B weekly ad ETL routes.
 from backend.api.ads import router as ads_router  # Imports H-E-B weekly ad retrieval routes.
+from backend.api.coupons import router as coupons_router  # Imports coupon CRUD routes.
+
+
 
 def register_routes(app: FastAPI) -> None:  # Registers all API routers on the FastAPI app.
     app.state.limiter = limiter  # Stores the limiter on app state for SlowAPI.
@@ -32,3 +35,4 @@ def register_routes(app: FastAPI) -> None:  # Registers all API routers on the F
     app.include_router(ad_etl_router, prefix="/api/v1")  # Mounts ad ETL routes under /api/v1/ad-etl.
     app.include_router(purchases_router, prefix="/api/v1")  # Mounts purchase CRUD routes under /api/v1/purchases.
     app.include_router(my_items_router, prefix="/api/v1")  # Mounts My Items CRUD routes under /api/v1/my-items.
+    app.include_router(coupons_router, prefix="/api/v1")  # Mounts coupon CRUD routes under /api/v1/coupons.
