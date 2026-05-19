@@ -1,5 +1,5 @@
 # =============================================================================  # File header separator.
-# File: correction.py  # Identifies this model file.
+# File: models/correction.py  # Identifies this model file.
 # Project: Grocery Intelligence Platform  # Identifies the project.
 # Author: Anita Woodford  # Identifies the project author.
 # Description: Defines correction-session models for the P1-11 ETL review workflow.  # Explains the file purpose.

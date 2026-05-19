@@ -1,5 +1,5 @@
 # =============================================================================
-# File: rebates.py
+# File: data_access/rebates.py
 # Project: Grocery Intelligence Platform
 # Author: Anita Woodford
 # Description: Provides Data Access Layer operations for the rebates collection.

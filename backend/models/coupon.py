@@ -1,5 +1,5 @@
 # =============================================================================
-# File: coupon.py
+# File: models/coupon.py
 # Project: Grocery Intelligence Platform
 # Author: Anita Woodford
 # Description: Defines coupon enums and the CouponModel for store, manufacturer, paper, app-only, basket, item, combo, and rebate coupon records.

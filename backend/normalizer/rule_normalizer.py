@@ -1,3 +1,11 @@
+# =============================================================================
+# File: normalizer/rule_normalizer.py
+# Project: Grocery Intelligence Platform
+# Author: Anita Woodford
+# Description: Implements a rule-based product name normalizer for mapping parsed item names to canonical product
+# SRS Traceability: Supports SRS v5.0 Section 12 ET-003 and Section 13 HC-001 through HC-009.
+# SDD Traceability: Supports SDD v5.0 Section 4 ETL Pipeline Design and Section 8 API Endpoint Design.
+# =============================================================================
 from __future__ import annotations  # Enables modern type hint behavior.
 
 import re  # Imports regular expressions for text cleanup and tokenization.

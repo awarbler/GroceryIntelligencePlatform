@@ -1,5 +1,5 @@
 # =============================================================================
-# File: rate_limit.py
+# File: api/rate_limit.py
 # Project: Grocery Intelligence Platform
 # Author: Anita Woodford
 # Description: Provides the shared FastAPI rate limiter instance.

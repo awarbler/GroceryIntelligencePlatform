@@ -1,5 +1,5 @@
 # =============================================================================
-# File: auth.py
+# File: api/auth.py
 # Project: Grocery Intelligence Platform
 # Author: Anita Woodford
 # Description: Provides FastAPI authentication endpoints for login, logout, and current-user lookup.

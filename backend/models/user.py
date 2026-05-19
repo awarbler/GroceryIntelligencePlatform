@@ -1,5 +1,5 @@
 # =============================================================================
-# File: user.py
+# File: models/user.py
 # Project: Grocery Intelligence Platform
 # Author: Anita Woodford
 # Description: Defines user preference and reporting models for the Grocery Intelligence Platform.

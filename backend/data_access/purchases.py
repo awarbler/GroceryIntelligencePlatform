@@ -1,5 +1,5 @@
 # =============================================================================
-# File: purchases.py
+# File: data_access/purchases.py
 # Project: Grocery Intelligence Platform
 # Author: Anita Woodford
 # Description: Provides Data Access Layer operations for the purchases collection.
@@ -16,7 +16,7 @@ from motor.motor_asyncio import AsyncIOMotorDatabase # Imports the async Motor d
 
 from backend.data_access.base import MongoDataAccess  # Imports shared CRUD behavior.
 from backend.database import  PURCHASES_COLLECTION# Imports the approved purchases collection name.
-
+from bson import ObjectId  # Converts purchase id strings to MongoDB ObjectId values.
 
 class PurchasesDataAccess(MongoDataAccess):  # Defines collection-specific access for purchases.
     """Data access helper for purchase documents."""  # Documents the class purpose.
@@ -74,6 +74,21 @@ class PurchasesDataAccess(MongoDataAccess):  # Defines collection-specific acces
             filters=filters, skip=skip, limit=limit
         )  # Returns matching purchases.
 
-        
-        
-        
+    async def create_purchase(self, purchase_doc: dict[str, Any]) -> dict[str, Any] | None:  # Inserts one validated purchase document.
+        result = await self.collection.insert_one(purchase_doc)  # Writes the purchase document to MongoDB.
+        return await self.collection.find_one({"_id": result.inserted_id})  # Returns the inserted document.
+
+    async def get_purchase_by_id(self, purchase_id: ObjectId) -> dict[str, Any] | None:  # Finds one purchase by ObjectId.
+        return await self.collection.find_one({"_id": purchase_id})  # Returns the matching purchase or None.
+
+    async def update_purchase_by_id(self, purchase_id: ObjectId, updates: dict[str, Any]) -> dict[str, Any] | None:  # Updates one purchase.
+        await self.collection.update_one({"_id": purchase_id}, {"$set": updates})  # Applies the update document.
+        return await self.collection.find_one({"_id": purchase_id})  # Returns the updated document.
+
+    async def delete_purchase_by_id(self, purchase_id: ObjectId) -> bool:  # Deletes one purchase record.
+        result = await self.collection.delete_one({"_id": purchase_id})  # Removes one matching purchase.
+        return result.deleted_count == 1  # Returns True when one record was deleted.
+
+    async def list_purchases(self, filters: dict[str, Any]) -> list[dict[str, Any]]:  # Lists purchases using optional filters.
+        cursor = self.collection.find(filters).sort("purchase_date", -1)  # Queries matching purchases newest first.
+        return await cursor.to_list(length=500)  # Returns up to 500 matching purchases.

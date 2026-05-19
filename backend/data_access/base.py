@@ -1,5 +1,5 @@
 # =============================================================================
-# File: base.py
+# File: data_access/base.py
 # Project: Grocery Intelligence Platform
 # Author: Anita Woodford
 # Description: Provides shared async MongoDB CRUD helpers for the Data Access Layer.

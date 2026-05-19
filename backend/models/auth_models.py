@@ -1,3 +1,13 @@
+# =============================================================================
+# file: backend/models/auth_models.py
+# Project: Grocery Intelligence Platform
+# Author: Anita Woodford
+# Description: Defines Pydantic models for authentication requests and responses.#
+# Security Note: These models must not include any sensitive information or secrets.
+# SRS Traceability: Supports SRS v5.0 SE-001 and SE-
+# SDD Traceability: Supports SDD v5.0 backend model layer and authentication data modeling.
+# =============================================================================
+
 from __future__ import annotations  # Enables forward-compatible type annotations.
 
 from datetime import datetime  # Imports datetime for token expiration fields.

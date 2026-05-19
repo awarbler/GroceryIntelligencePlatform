@@ -1,5 +1,5 @@
 # =============================================================================
-# File: store.py
+# File: models/store.py
 # Project: Grocery Intelligence Platform
 # Author: Anita Woodford
 # Description: Defines store configuration models for parser routing and store-specific behavior.

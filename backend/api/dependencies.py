@@ -1,5 +1,5 @@
 # =============================================================================
-# File: dependencies.py
+# File: api/dependencies.py
 # Project: Grocery Intelligence Platform
 # Author: Anita Woodford
 # Description: Provides reusable FastAPI dependencies for database access and JWT-protected routes.

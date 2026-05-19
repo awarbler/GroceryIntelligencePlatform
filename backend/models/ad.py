@@ -1,4 +1,5 @@
 # =============================================================================
+# file: backend/models/ad.py
 # Project: Grocery Intelligence Platform
 # Author: Anita Woodford
 # Description: Defines ad models for store sale ads, coupons, basket deals,

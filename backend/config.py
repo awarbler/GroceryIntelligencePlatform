@@ -1,5 +1,5 @@
 # =============================================================================
-# File: config.py
+# File: backend/config.py
 # Project: Grocery Intelligence Platform
 # Author: Anita Woodford
 # Created Date: 2024-06-01

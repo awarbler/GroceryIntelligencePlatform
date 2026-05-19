@@ -1,5 +1,5 @@
 # =============================================================================
-# File: ads.py
+# File: data_access/ads.py
 # Project: Grocery Intelligence Platform
 # Author: Anita Woodford
 # Description: Provides Data Access Layer operations for the ads collection.

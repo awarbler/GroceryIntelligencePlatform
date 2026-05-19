@@ -1,5 +1,5 @@
 # =============================================================================
-# File: rebate.py
+# File: models/rebate.py
 # Project: Grocery Intelligence Platform
 # Created Date: 2024-06-01
 # Author: Anita Woodford

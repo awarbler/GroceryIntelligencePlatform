@@ -1,5 +1,5 @@
 # =============================================================================  # File header separator.
-# File: correction_service.py  # Identifies this service file.
+# File: services/correction_service.py  # Identifies this service file.
 # Project: Grocery Intelligence Platform  # Identifies the project.
 # Author: Anita Woodford  # Identifies the project author.
 # Description: Provides in-memory correction-session storage with 24-hour TTL for P1-11.  # Explains the file purpose.

@@ -1,5 +1,5 @@
 # ==============================================================================
-# File: base.py
+# File: models/base.py
 # Project: Grocery Intelligence Platform
 # Purpose: Shared Pydantic base models for MongDB
 # Author: Anita Woodford

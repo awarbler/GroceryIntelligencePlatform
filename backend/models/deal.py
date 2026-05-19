@@ -1,5 +1,5 @@
 # =============================================================================
-# File: deal.py
+# File: models/deal.py
 # Project: Grocery Intelligence Platform
 # Author: Anita Woodford
 # Description: Defines deal match models for generated weekly grocery deal reports.
