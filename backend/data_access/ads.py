@@ -46,3 +46,7 @@ class AdsDataAccess(MongoDataAccess):  # Defines collection-specific access for 
             filters["store_ref"] = store_ref  # Filters by store reference.
 
         return await self.list_records(filters=filters, skip=skip, limit=limit)  # Returns matching ads.
+    
+    async def list_active_heb_ads(self) -> list[dict]:  # Lists active H-E-B ads
+        cursor = self.collection.find({"store": "HEB", "is_active": True})  # Finds active H-E-B ad records
+        return await cursor.to_list(length=None)  # Returns all active ads

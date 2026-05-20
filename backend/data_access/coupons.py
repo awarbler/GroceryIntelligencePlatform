@@ -50,6 +50,7 @@ class CouponsDataAccess(MongoDataAccess):  # Defines collection-specific access 
         return await self.list_records(
             filters=filters, skip=skip, limit=limit
         )  # Returns matching coupons.
+    
     async def create_coupon(
         self,
         coupon_data: Mapping[str, Any],
@@ -70,3 +71,7 @@ class CouponsDataAccess(MongoDataAccess):  # Defines collection-specific access 
         return await self.delete_one_by_id(
             coupon_id
         )  # Reuses shared DAL delete behavior.
+    
+    async def list_active_heb_coupons(self) -> list[dict]:  # Lists active H-E-B coupons
+        cursor = self.collection.find({"store": "HEB", "is_active": True})  # Finds active H-E-B coupons
+        return await cursor.to_list(length=None)  # Returns all active coupons

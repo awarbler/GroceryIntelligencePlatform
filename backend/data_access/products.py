@@ -128,3 +128,6 @@ class ProductsDataAccess(MongoDataAccess):  # Defines collection-specific access
             {"$set": {"avg_price": float(new_avg), "avg_price_observation_count": new_count}},  # Stores updated average.
         )  # Ends update call.
         return True  # Reports update success.
+    async def find_my_items(self) -> list[dict]:  # Lists products marked as My Items
+        cursor = self.collection.find({"is_my_item": True})  # Finds user regular items
+        return await cursor.to_list(length=None)  # Returns all matching products
