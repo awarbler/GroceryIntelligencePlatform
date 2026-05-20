@@ -33,3 +33,7 @@ class RewardOffersDataAccess(MongoDataAccess):  # Defines reward offer DAL opera
     async def list_expiring_between(self, start_date: date, end_date: date) -> list[dict]:  # Lists offers by expiration window.
         cursor = self.collection.find({"expiration_date": {"$gte": start_date, "$lte": end_date}})  # Builds date-window query.
         return await cursor.to_list(length=None)  # Converts Mongo cursor results to a list.
+    
+    async def list_active_offers(self, retailer: str) -> list[dict]:  # Lists active reward offers by retailer
+        cursor = self.collection.find({"retailer": retailer, "is_active": True})  # Finds active retailer rewards
+        return await cursor.to_list(length=None)  # Returns all active rewards
