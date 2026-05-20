@@ -23,7 +23,7 @@ from backend.api.my_items import router as my_items_router  # Imports My Items C
 from backend.api.ad_etl import router as ad_etl_router  # Imports H-E-B weekly ad ETL routes.
 from backend.api.ads import router as ads_router  # Imports H-E-B weekly ad retrieval routes.
 from backend.api.coupons import router as coupons_router  # Imports coupon CRUD routes.
-
+from backend.api.reports import router as reports_router  # Imports report routes.
 
 
 def register_routes(app: FastAPI) -> None:  # Registers all API routers on the FastAPI app.
@@ -36,3 +36,4 @@ def register_routes(app: FastAPI) -> None:  # Registers all API routers on the F
     app.include_router(purchases_router, prefix="/api/v1")  # Mounts purchase CRUD routes under /api/v1/purchases.
     app.include_router(my_items_router, prefix="/api/v1")  # Mounts My Items CRUD routes under /api/v1/my-items.
     app.include_router(coupons_router, prefix="/api/v1")  # Mounts coupon CRUD routes under /api/v1/coupons.
+    app.include_router(reports_router, prefix="/api/v1")  # Mounts report routes under /api/v1/reports.
