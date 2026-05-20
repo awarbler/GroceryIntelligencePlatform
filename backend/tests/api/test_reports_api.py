@@ -66,8 +66,8 @@ def _clear_overrides() -> None:  # Clears dependency overrides.
 def test_generate_report_returns_200() -> None:  # Tests successful request.
     service = _make_fake_service()  # Creates fake service.
     _override_service(service)  # Overrides dependency.
-    client = TestClient(app)  # Creates test client.
-    response = client.get("/api/v1/report/generate?week_of=2026-05-18")  # Calls endpoint.
+    test_client = TestClient(app)  # Creates test client.
+    response = test_client.get("/api/v1/report/generate?week_of=2026-05-18")  # Calls endpoint.
     _clear_overrides()  # Clears override.
     assert response.status_code == 200  # Verifies success.
     assert response.json()["success"] is True  # Verifies standard response.
@@ -76,8 +76,8 @@ def test_generate_report_returns_200() -> None:  # Tests successful request.
 def test_generate_report_missing_week_of_returns_422() -> None:  # Tests required week_of.
     service = _make_fake_service()  # Creates fake service.
     _override_service(service)  # Overrides dependency.
-    client = TestClient(app)  # Creates test client.
-    response = client.get("/api/v1/report/generate")  # Calls endpoint without week_of.
+    test_client = TestClient(app)  # Creates test client.
+    response = test_client.get("/api/v1/report/generate")  # Calls endpoint without week_of.
     _clear_overrides()  # Clears override.
     assert response.status_code == 422  # Verifies validation failure.
 
@@ -85,8 +85,8 @@ def test_generate_report_missing_week_of_returns_422() -> None:  # Tests require
 def test_generate_report_invalid_date_returns_422() -> None:  # Tests invalid date.
     service = _make_fake_service()  # Creates fake service.
     _override_service(service)  # Overrides dependency.
-    client = TestClient(app)  # Creates test client.
-    response = client.get("/api/v1/report/generate?week_of=not-a-date")  # Calls endpoint with bad date.
+    test_client = TestClient(app)  # Creates test client.
+    response = test_client.get("/api/v1/report/generate?week_of=not-a-date")  # Calls endpoint with bad date.
     _clear_overrides()  # Clears override.
     assert response.status_code == 422  # Verifies validation failure.
 
@@ -94,8 +94,8 @@ def test_generate_report_invalid_date_returns_422() -> None:  # Tests invalid da
 def test_generate_report_returns_grouped_stores() -> None:  # Tests store payload.
     service = _make_fake_service()  # Creates fake service.
     _override_service(service)  # Overrides dependency.
-    client = TestClient(app)  # Creates test client.
-    response = client.get("/api/v1/report/generate?week_of=2026-05-18")  # Calls endpoint.
+    test_client = TestClient(app)  # Creates test client.
+    response = test_client.get("/api/v1/report/generate?week_of=2026-05-18")  # Calls endpoint.
     _clear_overrides()  # Clears override.
     assert response.json()["data"]["stores"][0]["store_ref"] == "heb"  # Verifies grouped store.
 
@@ -103,8 +103,8 @@ def test_generate_report_returns_grouped_stores() -> None:  # Tests store payloa
 def test_generate_report_summary_keeps_financial_fields_separate() -> None:  # Tests financial separation.
     service = _make_fake_service()  # Creates fake service.
     _override_service(service)  # Overrides dependency.
-    client = TestClient(app)  # Creates test client.
-    response = client.get("/api/v1/report/generate?week_of=2026-05-18")  # Calls endpoint.
+    test_client = TestClient(app)  # Creates test client.
+    response = test_client.get("/api/v1/report/generate?week_of=2026-05-18")  # Calls endpoint.
     _clear_overrides()  # Clears override.
     summary = response.json()["data"]["summary"]  # Reads summary.
     assert "total_oop" in summary  # Verifies OOP field.
@@ -117,8 +117,8 @@ def test_generate_report_summary_keeps_financial_fields_separate() -> None:  # T
 def test_generate_report_meta_contains_counts() -> None:  # Tests metadata.
     service = _make_fake_service()  # Creates fake service.
     _override_service(service)  # Overrides dependency.
-    client = TestClient(app)  # Creates test client.
-    response = client.get("/api/v1/report/generate?week_of=2026-05-18")  # Calls endpoint.
+    test_client = TestClient(app)  # Creates test client.
+    response = test_client.get("/api/v1/report/generate?week_of=2026-05-18")  # Calls endpoint.
     _clear_overrides()  # Clears override.
     meta = response.json()["meta"]  # Reads meta.
     assert meta["week_of"] == "2026-05-18"  # Verifies week meta.
@@ -159,3 +159,76 @@ def test_generate_report_empty_report_returns_empty_stores() -> None:  # Tests e
     _clear_overrides()  # Clears override.
     assert response.status_code == 200  # Verifies success.
     assert response.json()["data"]["stores"] == []  # Verifies empty stores.
+    
+def test_download_report_pdf_returns_pdf(test_client, monkeypatch) -> None:  # Tests PDF download endpoint without real WeasyPrint.
+    from backend.api.reports import get_report_service  # Imports dependency override target.
+
+    class FakeReportService:  # Creates fake report service.
+        async def generate_weekly_report(self, week_of, store_ref=None):  # Creates fake report method.
+            return {"week_of": week_of.isoformat(), "generated_at": "now", "summary": {}, "stores": []}  # Returns report JSON.
+
+    def fake_build_pdf(self, report: dict) -> bytes:  # Creates fake PDF builder.
+        return b"%PDF-FAKE"  # Returns fake PDF bytes.
+
+    monkeypatch.setattr("backend.services.report_export_service.ReportExportService.build_pdf", fake_build_pdf)  # Replaces real WeasyPrint PDF generation.
+
+    test_client.app.dependency_overrides[get_report_service] = lambda: FakeReportService()  # Overrides DB-backed service.
+
+    response = test_client.get("/api/v1/report/download/pdf?week_of=2026-05-04")  # Calls PDF endpoint.
+
+    test_client.app.dependency_overrides.clear()  # Clears dependency overrides.
+
+    assert response.status_code == 200  # Confirms success.
+    assert response.headers["content-type"] == "application/pdf"  # Confirms PDF media type.
+    assert "weekly-report-2026-05-04.pdf" in response.headers["content-disposition"]  # Confirms filename.
+    assert response.content.startswith(b"%PDF")  # Confirms PDF output.
+
+def test_download_report_docx_returns_docx(test_client) -> None:  # Tests DOCX download endpoint.
+    from backend.api.reports import get_report_service  # Imports dependency override target.
+
+    class FakeReportService:  # Creates fake report service.
+        async def generate_weekly_report(self, week_of, store_ref=None):  # Creates fake report method.
+            return {"week_of": week_of.isoformat(), "generated_at": "now", "summary": {}, "stores": []}  # Returns report JSON.
+
+    test_client.app.dependency_overrides[get_report_service] = lambda: FakeReportService()  # Overrides DB-backed service.
+
+    response = test_client.get("/api/v1/report/download/docx?week_of=2026-05-04")  # Calls DOCX endpoint.
+
+    test_client.app.dependency_overrides.clear()  # Clears dependency overrides.
+
+    assert response.status_code == 200  # Confirms success.
+    assert response.headers["content-type"] == "application/vnd.openxmlformats-officedocument.wordprocessingml.document"  # Confirms DOCX media type.
+    assert "weekly-report-2026-05-04.docx" in response.headers["content-disposition"]  # Confirms filename.
+    assert response.content.startswith(b"PK")  # Confirms DOCX output.
+
+
+def test_download_report_pdf_missing_week_of_returns_422(test_client) -> None:  # Tests missing PDF query validation.
+    from backend.api.reports import get_report_service  # Imports dependency override target.
+
+    class FakeReportService:  # Creates fake report service.
+        async def generate_weekly_report(self, week_of, store_ref=None):  # Creates fake report method.
+            return {"week_of": week_of.isoformat(), "generated_at": "now", "summary": {}, "stores": []}  # Returns report JSON.
+
+    test_client.app.dependency_overrides[get_report_service] = lambda: FakeReportService()  # Overrides DB-backed service.
+
+    response = test_client.get("/api/v1/report/download/pdf")  # Calls endpoint without week_of.
+
+    test_client.app.dependency_overrides.clear()  # Clears dependency overrides.
+
+    assert response.status_code == 422  # Confirms validation error.
+
+
+def test_download_report_docx_invalid_week_of_returns_422(test_client) -> None:  # Tests invalid DOCX query validation.
+    from backend.api.reports import get_report_service  # Imports dependency override target.
+
+    class FakeReportService:  # Creates fake report service.
+        async def generate_weekly_report(self, week_of, store_ref=None):  # Creates fake report method.
+            return {"week_of": week_of.isoformat(), "generated_at": "now", "summary": {}, "stores": []}  # Returns report JSON.
+
+    test_client.app.dependency_overrides[get_report_service] = lambda: FakeReportService()  # Overrides DB-backed service.
+
+    response = test_client.get("/api/v1/report/download/docx?week_of=not-a-date")  # Calls endpoint with invalid date.
+
+    test_client.app.dependency_overrides.clear()  # Clears dependency overrides.
+
+    assert response.status_code == 422  # Confirms validation error.
