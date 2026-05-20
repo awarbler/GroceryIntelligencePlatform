@@ -72,7 +72,7 @@ def test_report_summary_keeps_rewards_and_rebates_out_of_oop() -> None:  # Verif
             "is_money_maker": True,  # Provides money-maker status.
         },  # Ends second match.
     ]  # Ends saved deal match records.
-    summary = _calculate_summary(matches)  # Calculates weekly report summary.
+    summary = _calculate_summary(matches)  # Calculates weekly report summary.git br
     assert summary["total_oop"] == 10.0  # Confirms total OOP is only OOP fields.
     assert summary["total_rebates_back"] == 3.0  # Confirms rebates are separate.
     assert summary["total_rewards_value"] == 10.0  # Confirms all rewards aggregate separately from OOP.
