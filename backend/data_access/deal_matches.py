@@ -39,3 +39,14 @@ class DealMatchesDataAccess(MongoDataAccess):
         week_date = date.fromisoformat(week_of) if isinstance(week_of, str) else week_of
         matches = await self.list_by_week(week_date)
         return matches[0] if matches else None
+    
+    async def list_by_week_and_store(  # Lists saved deal matches for one week and optional store.
+        self,  # Receives the current DAL instance.
+        week_of: date,  # Receives the report week date.
+        store_ref: str | None = None,  # Receives an optional store reference filter.
+    ) -> list[dict[str, Any]]:  # Returns saved deal match documents.
+        filters: dict[str, Any] = {"week_of": week_of.isoformat()}  # Builds the required week filter.
+        if store_ref is not None:  # Checks whether a store filter was provided.
+            filters["store_ref"] = store_ref  # Adds the store filter.
+        cursor = self.collection.find(filters)  # Queries only the deal_matches collection.
+        return await cursor.to_list(length=None)  # Returns all matching documents.
