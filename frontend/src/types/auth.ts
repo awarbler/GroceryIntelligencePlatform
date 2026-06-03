@@ -28,6 +28,11 @@ export interface TokenResponseData { // Defines the successful login token paylo
 export interface CurrentUser { // Defines the authenticated user returned by the backend.
   username: string; // Stores the authenticated username.
 }
+export interface AuthState { // Defines the frontend authentication state shape.
+  token: string | null; // Stores the current JWT token or null when logged out.
+  isAuthenticated: boolean; // Stores whether the user is currently authenticated.
+} // Ends the auth state type.
+
 
 export type LoginResponse = StandardResponse<TokenResponseData>; // Wraps token data in the standard backend response shape.
 export type CurrentUserResponse = StandardResponse<CurrentUser>; // Wraps current-user data in the standard backend response shape.

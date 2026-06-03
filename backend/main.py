@@ -11,6 +11,7 @@
 from __future__ import annotations  # Enables modern type annotation behavior.
 from collections.abc import AsyncGenerator# Imports the AsyncGenerator type for defining async generator functions.
 from contextlib import asynccontextmanager # Imports the asynccontextmanager decorator for creating async context managers.
+from fastapi.middleware.cors import CORSMiddleware
 
 from fastapi import FastAPI # Imports the FastAPI class used to create the backend application.
 from fastapi import FastAPI, HTTPException, Request, status  # Imports FastAPI app tools and exception handler types.
@@ -74,7 +75,16 @@ app.add_exception_handler(RequestValidationError, _handle_validation_error)  # R
 app.add_exception_handler(ValueError, _handle_value_error)  # Registers business-rule error handler.
 app.add_exception_handler(HTTPException, _handle_http_exception)  # Registers HTTP exception handler.
 app.add_exception_handler(Exception, _handle_unexpected_error)  # Registers sanitized fallback handler.
-app.add_middleware(SlowAPIMiddleware)  # Enables SlowAPI rate-limit enforcement.
+app.add_middleware(  # Adds browser CORS support for the React frontend.
+    CORSMiddleware,  # Uses FastAPI's CORS middleware.
+    allow_origins=[  # Defines allowed frontend origins.
+        "http://localhost:5173",  # Allows Vite frontend on localhost.
+        "http://127.0.0.1:5173",  # Allows Vite frontend on 127.0.0.1.
+    ],  # Ends allowed origins.
+    allow_credentials=True,  # Allows auth-related browser requests.
+    allow_methods=["*"],  # Allows OPTIONS, POST, GET, PATCH, DELETE.
+    allow_headers=["*"],  # Allows Content-Type and Authorization headers.
+)  # Ends CORS middleware setup.
 register_routes(app)  # Registers API routers and rate-limit exception handling.
 
 def read_root():  # Creates the function that runs when someone visits the root URL.

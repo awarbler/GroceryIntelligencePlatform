@@ -2,7 +2,8 @@ import axios, { type AxiosError } from 'axios'; // Imports Axios and its typed e
 import type { StandardResponse, ApiErrorDetail } from '../types/base'; // Imports the shared API response types.
 import type { LoginRequest, LoginResponse, CurrentUserResponse, LogoutResponse } from '../types/auth'; // Imports auth request and response types.
 
-const API_BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8000'; // Reads the API base URL from Vite env or local backend.
+const API_BASE_URL = import.meta.env.VITE_API_URL ?? 'http://127.0.0.1:8000'; // Reads the API base URL from Vite env or local backend. // Reads the API base URL from Vite env or local backend.
+
 
 const apiClient = axios.create({ // Creates one reusable Axios client.
   baseURL: `${API_BASE_URL}/api/v1`, // Adds the backend API prefix once.
@@ -45,6 +46,8 @@ export async function loginUser(request: LoginRequest): Promise<LoginResponse> {
   } // Ends token storage.
   return response.data; // Returns the standard response body.
 }
+
+
 
 export async function getCurrentUser(): Promise<CurrentUserResponse> { // Gets the currently authenticated user.
   const response = await apiClient.get<CurrentUserResponse>('/auth/me'); // Sends current-user request.
